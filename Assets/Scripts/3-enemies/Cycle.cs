@@ -19,7 +19,7 @@ public class Cycle : MonoBehaviour
 
             // Connect each point to the next one in the cycle
             Gizmos.DrawLine(
-                transform.GetChild(i).position, 
+                transform.GetChild(i).position,
                 transform.GetChild((i + 1) % transform.childCount).position
             );
         }
