@@ -23,11 +23,8 @@ public class PlayerPlacement : MonoBehaviour
 
     void CheckTileTypeUnderPlayer()
     {
-
         Vector3 playerPosition = player.transform.position;
-
         Vector3Int gridPosition = tilemap.WorldToCell(playerPosition);
-
         TileBase tileAtPosition = tilemap.GetTile(gridPosition);
 
         if (tileAtPosition == wallTile)
@@ -82,11 +79,13 @@ public class PlayerPlacement : MonoBehaviour
         {
             Vector3Int randomTile = floorTiles[Random.Range(0, floorTiles.Count)];
 
-            while(tilemap.GetTile(randomTile) == wallTile){
+            while (tilemap.GetTile(randomTile) == wallTile)
+            {
                 randomTile = floorTiles[Random.Range(0, floorTiles.Count)];
             }
 
-            if(tilemap.GetTile(randomTile) == floorTile){
+            if (tilemap.GetTile(randomTile) == floorTile)
+            {
                 Vector3 worldPosition = tilemap.CellToWorld(randomTile);
                 player.transform.position = worldPosition;
                 CheckTileTypeUnderPlayer();
@@ -147,6 +146,7 @@ public class PlayerPlacement : MonoBehaviour
         Debug.Log($"Only {reachableTileCount} reachable tiles found, which is fewer than 100.");
         return false;
     }
+
     public void CheckReachableTiles()
     {
         Vector3 playerPosition = player.transform.position;
