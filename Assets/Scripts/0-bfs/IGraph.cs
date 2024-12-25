@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 /**
  * An abstract graph.
@@ -8,6 +8,7 @@
  * @author Erel Segal-Halevi
  * @since 2020-12
  */
-public interface IGraph<T> {
+public interface IGraph<T>
+{
     IEnumerable<T> Neighbors(T node);
 }
