@@ -9,16 +9,16 @@ public class TargetMover : MonoBehaviour
     [SerializeField] AllowedTiles allowedTiles = null;
 
     [Tooltip("The speed by which the object moves towards the target, in meters (=grid units) per second")]
-    [SerializeField] float speed = 2f;
+    [SerializeField] private float speed = 2f;
 
     [Tooltip("Maximum number of iterations before BFS algorithm gives up on finding a path")]
-    [SerializeField] int maxIterations = 1000;
+    [SerializeField] private int maxIterations = 1000;
 
     [Tooltip("The target position in world coordinates")]
-    [SerializeField] Vector3 targetInWorld;
+    [SerializeField] private Vector3 targetInWorld;
 
     [Tooltip("The target position in grid coordinates")]
-    [SerializeField] Vector3Int targetInGrid;
+    [SerializeField] private Vector3Int targetInGrid;
 
     protected bool atTarget; // This property is set to "true" whenever the object has already found the target.
 
@@ -51,14 +51,16 @@ public class TargetMover : MonoBehaviour
     }
 
     // Coroutine that continuously moves the object towards the target
-    IEnumerator MoveTowardsTheTarget()
+    private IEnumerator MoveTowardsTheTarget()
     {
-        for (;;)
+        while (true)
         {
             yield return new WaitForSeconds(timeBetweenSteps);
 
             if (enabled && !atTarget)
+            {
                 MakeOneStepTowardsTheTarget();
+            }
         }
     }
 
