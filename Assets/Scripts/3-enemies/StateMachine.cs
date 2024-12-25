@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-
 
 using State = UnityEngine.MonoBehaviour;
 using Transition = System.Tuple<UnityEngine.MonoBehaviour, System.Func<bool>, UnityEngine.MonoBehaviour>;
@@ -12,47 +11,54 @@ using Transition = System.Tuple<UnityEngine.MonoBehaviour, System.Func<bool>, Un
  * At each transition, the machine enables the active state and disables all other states.
  * The first state added is the first active state.
  */
-public class StateMachine: MonoBehaviour {
-
-    //public System.Func<bool>  testCondition;
-
-    //[SerializeField]
-    private List<State>      states      = new();
-
-    //[SerializeField]
+public class StateMachine : MonoBehaviour
+{
+    private List<State> states = new();
     private List<Transition> transitions = new();
-
     private State activeState = null;
 
-    public void GoToState(State newActiveState) {
+    public void GoToState(State newActiveState)
+    {
         if (activeState == newActiveState) return;
-        if (activeState!=null) activeState.enabled = false;
+
+        if (activeState != null) activeState.enabled = false;
+
         activeState = newActiveState;
         activeState.enabled = true;
+
         Debug.Log("Going to state " + activeState);
     }
 
-    public StateMachine AddState(State newState) {
+    public StateMachine AddState(State newState)
+    {
         states.Add(newState);
         return this;
     }
 
-    public StateMachine AddTransition(State fromState, Func<bool> condition, State toState) {
-        transitions.Add(new Transition(fromState,condition,toState));
+    public StateMachine AddTransition(State fromState, Func<bool> condition, State toState)
+    {
+        transitions.Add(new Transition(fromState, condition, toState));
         return this;
     }
 
-    private void Start() {
-        foreach (State state in states) {
+    private void Start()
+    {
+        foreach (State state in states)
+        {
             state.enabled = false;
         }
+
         GoToState(states[0]);
     }
 
-    private void Update() {
-        foreach (Transition transition in transitions) {
-            if (transition.Item1==activeState) {
-                if (transition.Item2()==true) {
+    private void Update()
+    {
+        foreach (Transition transition in transitions)
+        {
+            if (transition.Item1 == activeState)
+            {
+                if (transition.Item2() == true)
+                {
                     GoToState(transition.Item3);
                     break;
                 }
@@ -60,4 +66,3 @@ public class StateMachine: MonoBehaviour {
         }
     }
 }
- 
