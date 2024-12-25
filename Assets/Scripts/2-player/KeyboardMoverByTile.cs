@@ -6,7 +6,8 @@ using UnityEngine.Tilemaps;
  * This component allows the player to move by clicking the arrow keys,
  * but only if the new position is on an allowed tile.
  */
-public class KeyboardMoverByTile : KeyboardMover {
+public class KeyboardMoverByTile : KeyboardMover
+{
     [SerializeField] Tilemap tilemap = null;
     [SerializeField] AllowedTiles allowedTiles = null;
 
@@ -23,89 +24,120 @@ public class KeyboardMoverByTile : KeyboardMover {
     private bool hasHorse = false;
     private bool hasPickaxe = false;
 
-    private TileBase TileOnPosition(Vector3 worldPosition) {
+    private TileBase TileOnPosition(Vector3 worldPosition)
+    {
         Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
         return tilemap.GetTile(cellPosition);
     }
 
-    void Update() {
+    void Update()
+    {
         Vector3 newPosition = NewPosition();
         TileBase tileOnNewPosition = TileOnPosition(newPosition);
 
         // Handle item collection and movement
-        if (tileOnNewPosition == pickaxeTile) {
+        if (tileOnNewPosition == pickaxeTile)
+        {
             CollectPickaxe(newPosition);
-        } else if (tileOnNewPosition == boatTile) {
+        }
+        else if (tileOnNewPosition == boatTile)
+        {
             CollectBoat(newPosition);
-        } else if (tileOnNewPosition == horseTile) {
+        }
+        else if (tileOnNewPosition == horseTile)
+        {
             CollectHorse(newPosition);
         }
 
         // Handle movement if allowed
-        if (allowedTiles.Contains(tileOnNewPosition)) {
+        if (allowedTiles.Contains(tileOnNewPosition))
+        {
             transform.position = newPosition;
-        } else {
+        }
+        else
+        {
             Debug.LogError("You cannot walk on " + tileOnNewPosition + "!");
         }
     }
 
-    private void CollectPickaxe(Vector3 pickaxePosition) {
+    private void CollectPickaxe(Vector3 pickaxePosition)
+    {
         hasPickaxe = true;
         Debug.Log("Pickaxe collected! You can now mine mountains.");
 
         // Replace the pickaxe tile with the replacement tile if defined
-        if (replaceTile != null) {
+        if (replaceTile != null)
+        {
             SetTileAtPosition(pickaxePosition, replaceTile);
-        } else {
+        }
+        else
+        {
             SetTileAtPosition(pickaxePosition, null);
         }
     }
 
-    private void CollectBoat(Vector3 boatPosition) {
+    private void CollectBoat(Vector3 boatPosition)
+    {
         hasBoat = true;
         Debug.Log("Boat collected! You can now move on water.");
 
         // Replace the boat tile with the replacement tile if defined
-        if (replaceTile != null) {
+        if (replaceTile != null)
+        {
             SetTileAtPosition(boatPosition, replaceTile);
-        } else {
+        }
+        else
+        {
             SetTileAtPosition(boatPosition, null);
         }
 
         // Add water tiles to the allowed tiles list
-        foreach (TileBase waterTile in waterTiles) {
-            if (waterTile != null) {
+        foreach (TileBase waterTile in waterTiles)
+        {
+            if (waterTile != null)
+            {
                 allowedTiles.AddTile(waterTile);  // Ensure the water tile is added to allowed tiles
                 Debug.Log($"Added water tile: {waterTile.name}");
-            } else {
+            }
+            else
+            {
                 Debug.LogError("Water tile is null!");
             }
         }
     }
 
-    private void CollectHorse(Vector3 horsePosition) {
+    private void CollectHorse(Vector3 horsePosition)
+    {
         hasHorse = true;
         Debug.Log("Horse collected! You can now move on hills.");
 
         // Replace the horse tile with the replacement tile if defined
-        if (replaceTile != null) {
+        if (replaceTile != null)
+        {
             SetTileAtPosition(horsePosition, replaceTile);
-        } else {
+        }
+        else
+        {
             SetTileAtPosition(horsePosition, null);
         }
 
         // Add the single mountain tile to the allowed tiles list
-        if (mountainTile != null) {
+        if (mountainTile != null)
+        {
             allowedTiles.AddTile(mountainTile); // Ensure the mountain tile is added to allowed tiles
             Debug.Log($"Added mountain tile: {mountainTile.name}");
-        } else {
+        }
+        else
+        {
             Debug.LogError("Mountain tile is null!");
         }
     }
 
-    private void MineMountain(Vector3 mountainPosition) {
+    private void MineMountain(Vector3 mountainPosition)
+    {
         // Replace mountain tile with grass if the player has the pickaxe
-        if (hasPickaxe && mountainTile != null && grassTile != null) {
+        if (hasPickaxe && mountainTile != null && grassTile != null)
+        {
             SetTileAtPosition(mountainPosition, grassTile);
             Debug.Log("Mountain mined and turned into grass!");
 
@@ -114,17 +146,23 @@ public class KeyboardMoverByTile : KeyboardMover {
             TileBase tileOnNewPosition = TileOnPosition(newPosition);
 
             // Allow movement only if the tile is allowed (including the new grass tile)
-            if (allowedTiles.Contains(tileOnNewPosition)) {
+            if (allowedTiles.Contains(tileOnNewPosition))
+            {
                 transform.position = newPosition;
-            } else {
+            }
+            else
+            {
                 Debug.LogError("You cannot walk on " + tileOnNewPosition + "!");
             }
-        } else {
+        }
+        else
+        {
             Debug.LogError("Mountain or grass tile is null!");
         }
     }
 
-    private void SetTileAtPosition(Vector3 worldPosition, TileBase newTile) {
+    private void SetTileAtPosition(Vector3 worldPosition, TileBase newTile)
+    {
         Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
         tilemap.SetTile(cellPosition, newTile);
     }
