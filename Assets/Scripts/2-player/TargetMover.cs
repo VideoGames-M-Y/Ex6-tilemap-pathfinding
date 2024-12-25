@@ -25,6 +25,7 @@ public class TargetMover : MonoBehaviour
     protected TilemapGraph tilemapGraph = null; // Changed from private to protected
     private float timeBetweenSteps;
 
+    // Sets the target position and updates the grid position
     public void SetTarget(Vector3 newTarget)
     {
         if (targetInWorld != newTarget)
@@ -35,11 +36,13 @@ public class TargetMover : MonoBehaviour
         }
     }
 
+    // Returns the current target position in world coordinates
     public Vector3 GetTarget()
     {
         return targetInWorld;
     }
 
+    // Initializes the tilemap graph and starts the movement coroutine
     protected virtual void Start()
     {
         tilemapGraph = new TilemapGraph(tilemap, allowedTiles.Get());
@@ -47,24 +50,29 @@ public class TargetMover : MonoBehaviour
         StartCoroutine(MoveTowardsTheTarget());
     }
 
+    // Coroutine that continuously moves the object towards the target
     IEnumerator MoveTowardsTheTarget()
     {
         for (;;)
         {
             yield return new WaitForSeconds(timeBetweenSteps);
+
             if (enabled && !atTarget)
                 MakeOneStepTowardsTheTarget();
         }
     }
 
+    // Makes one step towards the target using BFS to find the shortest path
     private void MakeOneStepTowardsTheTarget()
     {
         Vector3Int startNode = tilemap.WorldToCell(transform.position);
         Vector3Int endNode = targetInGrid;
+
+        // Get the shortest path using BFS
         List<Vector3Int> shortestPath = BFS.GetPath(tilemapGraph, startNode, endNode, maxIterations);
         Debug.Log("shortestPath = " + string.Join(" , ", shortestPath));
 
-        if (shortestPath.Count >= 2) // shortestPath contains both source and target.
+        if (shortestPath.Count >= 2) // shortestPath contains both source and target
         {
             Vector3Int nextNode = shortestPath[1];
             transform.position = tilemap.GetCellCenterWorld(nextNode);
@@ -75,6 +83,7 @@ public class TargetMover : MonoBehaviour
             {
                 Debug.LogError($"No path found between {startNode} and {endNode}");
             }
+
             atTarget = true;
         }
     }
