@@ -2,9 +2,8 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
 
-
-
-public class TilemapCaveGenerator: MonoBehaviour {
+public class TilemapCaveGenerator : MonoBehaviour
+{
     [SerializeField] Tilemap tilemap = null;
 
     [Tooltip("The tile that represents a wall (an impassable block)")]
@@ -25,46 +24,50 @@ public class TilemapCaveGenerator: MonoBehaviour {
 
     [Tooltip("For how long will we pause between each simulation step so we can look at the result?")]
     [SerializeField] float pauseTime = 1f;
+
     private CaveGenerator caveGenerator;
 
-    void Start()  {
-        //To get the same random numbers each time we run the script
+    void Start()
+    {
+        // To get the same random numbers each time we run the script
         Random.InitState(100);
 
         caveGenerator = new CaveGenerator(randomFillPercent, gridSize);
         caveGenerator.RandomizeMap();
 
-        //For testing that init is working
+        // For testing that init is working
         GenerateAndDisplayTexture(caveGenerator.GetMap());
 
-        //Start the simulation
+        // Start the simulation
         SimulateCavePattern();
     }
 
-
-    //Do the simulation in a coroutine so we can pause and see what's going on
-async void SimulateCavePattern()  {
-        for (int i = 0; i < simulationSteps; i++)   {
+    // Do the simulation in a coroutine so we can pause and see what's going on
+    async void SimulateCavePattern()
+    {
+        for (int i = 0; i < simulationSteps; i++)
+        {
             await Awaitable.WaitForSecondsAsync(pauseTime);
 
-            //Calculate the new values
+            // Calculate the new values
             caveGenerator.SmoothMap();
 
-            //Generate texture and display it on the plane
+            // Generate texture and display it on the plane
             GenerateAndDisplayTexture(caveGenerator.GetMap());
         }
         Debug.Log("Simulation completed!");
     }
 
-
-
-    //Generate a black or white texture depending on if the pixel is cave or wall
-    //Display the texture on a plane
-    private void GenerateAndDisplayTexture(int[,] data) {
-        for (int y = 0; y < gridSize; y++) {
-            for (int x = 0; x < gridSize; x++) {
+    // Generate a black or white texture depending on if the pixel is cave or wall
+    // Display the texture on a plane
+    private void GenerateAndDisplayTexture(int[,] data)
+    {
+        for (int y = 0; y < gridSize; y++)
+        {
+            for (int x = 0; x < gridSize; x++)
+            {
                 var position = new Vector3Int(x, y, 0);
-                var tile = data[x, y] == 1 ? wallTile: floorTile;
+                var tile = data[x, y] == 1 ? wallTile : floorTile;
                 tilemap.SetTile(position, tile);
             }
         }
