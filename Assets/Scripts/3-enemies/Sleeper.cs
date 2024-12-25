@@ -26,9 +26,10 @@ public class Sleeper : MonoBehaviour
     private void Update()
     {
         sleepTimer -= Time.deltaTime;
+
         if (sleepTimer <= 0f)
         {
-            enabled = false; 
+            enabled = false;
         }
     }
 
