@@ -11,19 +11,20 @@ public class KeyboardMoverByTile : KeyboardMover
     [SerializeField] Tilemap tilemap = null;
     [SerializeField] AllowedTiles allowedTiles = null;
 
-    [SerializeField] private TileBase[] waterTiles = null;    // Water tiles
-    [SerializeField] private TileBase boatTile = null;        // The boat tile
-    [SerializeField] private TileBase mountainTile = null;    // Single mountain Tile
-    [SerializeField] private TileBase horseTile = null;       // The horse tile
-    [SerializeField] private TileBase pickaxeTile = null; 
-    [SerializeField] private TileBase grassTile = null;
+    [SerializeField] private TileBase[] waterTiles = null;   // Water tiles
+    [SerializeField] private TileBase boatTile = null;       // The boat tile
+    [SerializeField] private TileBase mountainTile = null;   // Single mountain Tile
+    [SerializeField] private TileBase horseTile = null;      // The horse tile
+    [SerializeField] private TileBase pickaxeTile = null;    // The pickaxe tile
+    [SerializeField] private TileBase grassTile = null;      // The grass tile
 
-    [SerializeField] private TileBase replaceTile = null;     // Replacement tile after collecting items
+    [SerializeField] private TileBase replaceTile = null;    // Replacement tile after collecting items
 
     private bool hasBoat = false;
     private bool hasHorse = false;
     private bool hasPickaxe = false;
 
+    // Returns the tile at the given world position
     private TileBase TileOnPosition(Vector3 worldPosition)
     {
         Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
@@ -60,6 +61,7 @@ public class KeyboardMoverByTile : KeyboardMover
         }
     }
 
+    // Handles collecting the pickaxe and replacing the tile with a new one
     private void CollectPickaxe(Vector3 pickaxePosition)
     {
         hasPickaxe = true;
@@ -76,6 +78,7 @@ public class KeyboardMoverByTile : KeyboardMover
         }
     }
 
+    // Handles collecting the boat and adding water tiles to allowed tiles
     private void CollectBoat(Vector3 boatPosition)
     {
         hasBoat = true;
@@ -106,6 +109,7 @@ public class KeyboardMoverByTile : KeyboardMover
         }
     }
 
+    // Handles collecting the horse and adding mountain tiles to allowed tiles
     private void CollectHorse(Vector3 horsePosition)
     {
         hasHorse = true;
@@ -133,6 +137,7 @@ public class KeyboardMoverByTile : KeyboardMover
         }
     }
 
+    // Mines the mountain tile and turns it into grass
     private void MineMountain(Vector3 mountainPosition)
     {
         // Replace mountain tile with grass if the player has the pickaxe
@@ -161,6 +166,7 @@ public class KeyboardMoverByTile : KeyboardMover
         }
     }
 
+    // Sets the tile at a specific world position
     private void SetTileAtPosition(Vector3 worldPosition, TileBase newTile)
     {
         Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
