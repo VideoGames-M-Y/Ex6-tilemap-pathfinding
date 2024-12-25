@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,7 +12,7 @@ public class KeyboardMoverByTile : KeyboardMover {
 
     [SerializeField] private TileBase[] waterTiles = null;    // Water tiles
     [SerializeField] private TileBase boatTile = null;        // The boat tile
-    [SerializeField] private TileBase mountainTile = null;    // Single mountaine Tile
+    [SerializeField] private TileBase mountainTile = null;    // Single mountain Tile
     [SerializeField] private TileBase horseTile = null;       // The horse tile
     [SerializeField] private TileBase pickaxeTile = null; 
     [SerializeField] private TileBase grassTile = null;
@@ -28,30 +28,20 @@ public class KeyboardMoverByTile : KeyboardMover {
         return tilemap.GetTile(cellPosition);
     }
 
-
     void Update() {
         Vector3 newPosition = NewPosition();
         TileBase tileOnNewPosition = TileOnPosition(newPosition);
 
-        // Check if the player collects the pickaxe
+        // Handle item collection and movement
         if (tileOnNewPosition == pickaxeTile) {
             CollectPickaxe(newPosition);
-        }
-
-        // Check if the player can mine mountains with the pickaxe
-        if (hasPickaxe && tileOnNewPosition == mountainTile) {
-            MineMountain(newPosition);
-        }
-
-        // Check if the player collects the boat or the horse
-        if (tileOnNewPosition == boatTile) {
+        } else if (tileOnNewPosition == boatTile) {
             CollectBoat(newPosition);
-        }
-        if (tileOnNewPosition == horseTile) {
+        } else if (tileOnNewPosition == horseTile) {
             CollectHorse(newPosition);
         }
 
-        // Allow movement only if the tile is allowed
+        // Handle movement if allowed
         if (allowedTiles.Contains(tileOnNewPosition)) {
             transform.position = newPosition;
         } else {
@@ -69,33 +59,6 @@ public class KeyboardMoverByTile : KeyboardMover {
         } else {
             SetTileAtPosition(pickaxePosition, null);
         }
-    }
-
-    private void MineMountain(Vector3 mountainPosition) {
-        // Replace mountain tile with grass if the player has the pickaxe
-        if (mountainTile != null && grassTile != null) {
-            // Replace the mountain tile with the grass tile
-            SetTileAtPosition(mountainPosition, grassTile);
-            Debug.Log("Mountain mined and turned into grass!");
-
-            // Immediately update the player's position to the new tile
-            Vector3 newPosition = NewPosition();  // Recalculate the position
-            TileBase tileOnNewPosition = TileOnPosition(newPosition);
-
-            // Allow movement only if the tile is allowed (including the new grass tile)
-            if (allowedTiles.Contains(tileOnNewPosition)) {
-                transform.position = newPosition;  // Move the player to the new tile
-            } else {
-                Debug.LogError("You cannot walk on " + tileOnNewPosition + "!");
-            }
-        } else {
-            Debug.LogError("Mountain or grass tile is null!");
-        }
-    }
-
-    private void SetTileAtPosition(Vector3 worldPosition, TileBase newTile) {
-        Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
-        tilemap.SetTile(cellPosition, newTile);
     }
 
     private void CollectBoat(Vector3 boatPosition) {
@@ -131,13 +94,38 @@ public class KeyboardMoverByTile : KeyboardMover {
             SetTileAtPosition(horsePosition, null);
         }
 
-        // Add the single mountaine tile to the allowed tiles list
+        // Add the single mountain tile to the allowed tiles list
         if (mountainTile != null) {
-            allowedTiles.AddTile(mountainTile); // Ensure the mountaine tile is added to allowed tiles
-            Debug.Log($"Added mountaine tile: {mountainTile.name}");
+            allowedTiles.AddTile(mountainTile); // Ensure the mountain tile is added to allowed tiles
+            Debug.Log($"Added mountain tile: {mountainTile.name}");
         } else {
-            Debug.LogError("mountaine tile is null!");
+            Debug.LogError("Mountain tile is null!");
         }
     }
-}
 
+    private void MineMountain(Vector3 mountainPosition) {
+        // Replace mountain tile with grass if the player has the pickaxe
+        if (hasPickaxe && mountainTile != null && grassTile != null) {
+            SetTileAtPosition(mountainPosition, grassTile);
+            Debug.Log("Mountain mined and turned into grass!");
+
+            // Immediately update the player's position to the new tile
+            Vector3 newPosition = NewPosition();
+            TileBase tileOnNewPosition = TileOnPosition(newPosition);
+
+            // Allow movement only if the tile is allowed (including the new grass tile)
+            if (allowedTiles.Contains(tileOnNewPosition)) {
+                transform.position = newPosition;
+            } else {
+                Debug.LogError("You cannot walk on " + tileOnNewPosition + "!");
+            }
+        } else {
+            Debug.LogError("Mountain or grass tile is null!");
+        }
+    }
+
+    private void SetTileAtPosition(Vector3 worldPosition, TileBase newTile) {
+        Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
+        tilemap.SetTile(cellPosition, newTile);
+    }
+}
